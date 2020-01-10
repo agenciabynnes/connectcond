@@ -143,10 +143,12 @@ id="com.connectcond.android"
 <splash platform="android" src="package-assets/splash-android-480-640.png" density="hdpi" width="480" height="640" orientation="portrait"/>
 <splash platform="android" src="package-assets/splash-android-320-426.png" density="ldpi" width="320" height="426" orientation="portrait"/>
 <splash platform="android" src="package-assets/splash-android-320-470.png" density="mdpi" width="320" height="470" orientation="portrait"/>
+
 <splash platform="android" src="package-assets/splash-android-960-720.png" density="xhdpi" width="960" height="720" orientation="landscape"/>
 <splash platform="android" src="package-assets/splash-android-640-480.png" density="hdpi" width="640" height="480" orientation="landscape"/>
 <splash platform="android" src="package-assets/splash-android-470-320.png" density="mdpi" width="470" height="320" orientation="landscape"/>
 <splash platform="android" src="package-assets/splash-android-426-320.png" density="ldpi" width="426" height="320" orientation="landscape"/>
+
 <splash platform="ios" src="package-assets/splash-ios-2048-2732.png" width="2048" height="2732" orientation="portrait"/>
 <splash platform="ios" src="package-assets/splash-ios-1536-2048.png" width="1536" height="2048" orientation="portrait"/>
 <splash platform="ios" src="package-assets/splash-ios-768-1024.png" width="768" height="1024" orientation="portrait"/>
@@ -155,16 +157,20 @@ id="com.connectcond.android"
 <splash platform="ios" src="package-assets/splash-ios-640-1136.png" width="640" height="1136" orientation="portrait"/>
 <splash platform="ios" src="package-assets/splash-ios-640-960.png" width="640" height="960" orientation="portrait"/>
 <splash platform="ios" src="package-assets/splash-ios-320-480.png" width="320" height="480" orientation="portrait"/>
+
 <splash platform="ios" src="package-assets/splash-ios-2732-2048.png" width="2732" height="2048" orientation="landscape"/>
 <splash platform="ios" src="package-assets/splash-ios-2208-1242.png" width="2208" height="1242" orientation="landscape"/>
 <splash platform="ios" src="package-assets/splash-ios-1334-750.png" width="1334" height="750" orientation="landscape"/>
 <splash platform="ios" src="package-assets/splash-ios-2048-1536.png" width="2048" height="1536" orientation="landscape"/>
 <splash platform="ios" src="package-assets/splash-ios-1024-768.png" width="1024" height="768" orientation="landscape"/>
+
+<splash src = "package-assets/Default@2x~universal~anyany.png" />
+<splash src = "package-assets/Default@2x~universal~comany.png" />
+
 <icon platform="android" src="package-assets/icon-36.png" density="ldpi" width="36" height="36"/>
 <icon platform="android" src="package-assets/icon-48.png" density="mdpi" width="48" height="48"/>
 <icon platform="android" src="package-assets/icon-72.png" density="hdpi" width="72" height="72"/>
 <icon platform="android" src="package-assets/icon-96.png" density="xhdpi" width="96" height="96"/>
-
 <icon platform="android" src="package-assets/icon-144.png" density="xxhdpi" width="144" height="144"/>
 <icon platform="android" src="package-assets/icon-192.png" density="xxxhdpi" width="192" height="192"/>
 
