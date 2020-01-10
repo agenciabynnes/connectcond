@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "230054065669",
+    "firebase_url": "https://connectcond-498a4.firebaseio.com",
+    "project_id": "connectcond-498a4",
+    "storage_bucket": "connectcond-498a4.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:230054065669:android:fb6e137dd9154e01470e6c",
+        "android_client_info": {
+          "package_name": "com.connectcond.android"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "230054065669-26ot7b5r0t707sic31o85n8cq39l5cb1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDpLeKEvh9ozIJo4zvFGOrePlJYcB5JK1s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "230054065669-26ot7b5r0t707sic31o85n8cq39l5cb1.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "230054065669-r2nnsiahgar6hp49hqq8e8nivnmmvn4j.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.connectcond.ios"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
