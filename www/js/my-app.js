@@ -1,7 +1,7 @@
 // Initialize your app
 var myApp = new Framework7({
     // Default title for modals
-    modalTitle: 'Prática',
+    modalTitle: 'ConnectCond',
     tapHold: true,
     tapHoldPreventClicks: true,
      // Enable Material theme
