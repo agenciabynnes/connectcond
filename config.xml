@@ -165,7 +165,6 @@ id="com.connectcond.android"
 <splash platform="ios" src="package-assets/splash-ios-1024-768.png" width="1024" height="768" orientation="landscape"/>-->
 
 <splash src = "package-assets/Default@2x~universal~anyany.png" />
-<splash src = "package-assets/Default@2x~universal~comany.png" />
 
 <icon platform="android" src="package-assets/icon-36.png" density="ldpi" width="36" height="36"/>
 <icon platform="android" src="package-assets/icon-48.png" density="mdpi" width="48" height="48"/>
