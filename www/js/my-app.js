@@ -52,7 +52,7 @@ function execmascara(){
 function mplaca(v){
     v=v.replace(/([a-zA-Z]{3})(\d{1,2})$/,"$1-$2") //Coloca um hífen entre o terceiro e o quarto dígitos
     //v=v.replace(/(\d{4})(\d)/,"$1-$2")
-    return v
+    return v.toUpperCase()
 }
 //window.screen.lockOrientation('portrait');
 //intel.xdk.device.setRotateOrientation("portrait");
@@ -67,6 +67,11 @@ var tabindex = 1;
 var bannerview = 0;
 var atualizamaptime;
 var alertadechegadahometime;
+var $$idcondominioteste = "106";
+var $$idblocoteste = "2322";
+var $$iddomicilioteste = "12412";
+var $$senderID = "230054065669";
+var $$testelocal = true;
 
 logado();
 
@@ -152,6 +157,45 @@ function onOnline() {
 }
 
 document.addEventListener("online", onOnline, false);
+
+//////////////////////////////// GetNinjas ////////////////////////////////
+function getninjas(){
+    myApp.showIndicator();
+    
+    /*var inAppBrowserRef;
+    var target = "_blank";
+    var options = "zoom=no,location=yes,toolbarcolor=#3f51b5,closebuttoncolor=#ffffff,navigationbuttoncolor=#ffffff,hideurlbar=yes";
+    
+    inAppBrowserRef = cordova.InAppBrowser.open("https://parcerias.getninjas.com.br/v1/?utm_source=apptohome&utm_medium=app&utm_campaign=services", target, options);
+    inAppBrowserRef.addEventListener('loadstop', loadStopCallBack);
+    function loadStopCallBack(){
+        myApp.hideIndicator();
+    }*/
+
+    $(".iframe-boleto").attr("src","https://parcerias.getninjas.com.br/v1/?utm_source=apptohome&utm_medium=app&utm_campaign=services");
+    $('.iframe-boleto').on("load", function() {
+        myApp.hideIndicator();
+    });
+
+}
+
+//////////////////////////////// inserir click no banner ////////////////////////////////
+function clickbanner(id){
+    $.ajax($server+'functionAppBanner.php?', {
+        type: "post",
+        data: "idbanner="+id+"&idmorador="+localStorage.getItem("moradorIdmorador")+"&idsindico="+localStorage.getItem("sindicoIdsindico")+"&idportaria="+localStorage.getItem("portariaIdportaria")+"&idadministradora="+localStorage.getItem("administradoraIdadministradora")+"&action=click",
+    })
+      .fail(function() {
+
+      })     
+      .done(function(data) {
+        if (data!="ok") {
+            console.log('Erro click banner');
+        } else {
+            console.log('click banner ok');
+        }
+      });
+}
 
 myApp.onPageReinit('index', function (page) {
         
@@ -947,7 +991,10 @@ $$('#entrar').on('click', function(){
     
     myApp.showIndicator();
 
-        onDeviceReady();
+        // habilita teste local
+        if ($$testelocal==false) {
+            onDeviceReady();
+        }
 
         $.ajax({
             url: $$url,
@@ -1963,6 +2010,12 @@ function modulos(){
                                 }
                                 auxalerta = 1;
                             break;
+                            // case 21 = visualizacao de ocorrencias (todos ou so quem criou)
+                            case '22':
+                                $$(".menutaps").addClass("invisivel");
+                            break;
+                            case '23':
+                                $$(".menugetninjas").addClass("invisivel");
                         }
                     }
                     // se nao for desabilitado (case 15) mostra o popup
@@ -2775,12 +2828,10 @@ function cameraProfile() {
 // Take picture using device camera and retrieve image as base64-encoded string
     navigator.camera.getPicture(onSuccessProfile, onFailProfile, {
     quality: 80,
-    allowEdit : true,
     targetWidth: 1500,
     correctOrientation: true,
     targetHeight: 1000,
-    destinationType: Camera.DestinationType.DATA_URL,
-    saveToPhotoAlbum: true
+    destinationType: Camera.DestinationType.DATA_URL
     });
 }
 
@@ -2789,7 +2840,6 @@ function cameraFileProfile(source) {
 // Retrieve image file location from specified source
     navigator.camera.getPicture(onSuccessProfile, onFailProfile, {
     quality: 80,
-    allowEdit : true,
     targetWidth: 1500,
     correctOrientation: true,
     targetHeight: 1000,
@@ -2965,7 +3015,7 @@ if (indexofImage!="-1") {
                 }
                 
                 myApp.hideIndicator();
-                myApp.alert('Usuário editado om sucesso!', function () { mainView.router.load({pageName: 'index'});});
+                myApp.alert('Usuário editado com sucesso!', function () { mainView.router.load({pageName: 'index'});});
             });
         }
          ,error:function(data){
@@ -3694,11 +3744,9 @@ function cameraAnuncios() {
 // Take picture using device camera and retrieve image as base64-encoded string
     navigator.camera.getPicture(onSuccessAnuncios, onFailAnuncios, {
     quality: 80,
-    allowEdit : true,
     targetWidth: 1500,
     correctOrientation: true,
-    destinationType: Camera.DestinationType.DATA_URL,
-    saveToPhotoAlbum: true
+    destinationType: Camera.DestinationType.DATA_URL
     });
 }
 
@@ -3707,7 +3755,6 @@ function cameraFileAnuncios(source) {
 // Retrieve image file location from specified source
     navigator.camera.getPicture(onSuccessAnuncios, onFailAnuncios, {
     quality: 80,
-    allowEdit : true,
     targetWidth: 1500,
     correctOrientation: true,
     destinationType: Camera.DestinationType.DATA_URL,
@@ -4088,6 +4135,10 @@ function livroocorrenciascont(id,push,eq){
             idmorador = "";
             idsindico = "";
             idadministradora = localStorage.getItem("administradoraIdadministradora");
+        } else if (localStorage.getItem("sindicoIdsindico")){
+            idmorador = "";
+            idsindico = localStorage.getItem("sindicoIdsindico");
+            idadministradora = "";
         }
 
         $.ajax({
@@ -4375,11 +4426,9 @@ function cameraOcorrencia() {
 // Take picture using device camera and retrieve image as base64-encoded string
     navigator.camera.getPicture(onSuccessOcorrencias, onFailOcorrencias, {
     quality: 80,
-    allowEdit : true,
     targetWidth: 1500,
     correctOrientation: true,
-    destinationType: Camera.DestinationType.DATA_URL,
-    saveToPhotoAlbum: true
+    destinationType: Camera.DestinationType.DATA_URL
     });
 }
 
@@ -4388,7 +4437,6 @@ function cameraFileOcorrencia(source) {
 // Retrieve image file location from specified source
     navigator.camera.getPicture(onSuccessOcorrencias, onFailOcorrencias, {
     quality: 80,
-    allowEdit : true,
     targetWidth: 1500,
     correctOrientation: true,
     destinationType: Camera.DestinationType.DATA_URL,
@@ -4826,11 +4874,9 @@ function cameraTransparencia() {
 // Take picture using device camera and retrieve image as base64-encoded string
     navigator.camera.getPicture(onSuccessTransparencia, onFailTransparencia, {
     quality: 80,
-    allowEdit : true,
     targetWidth: 1500,
     correctOrientation: true,
-    destinationType: Camera.DestinationType.DATA_URL,
-    saveToPhotoAlbum: true
+    destinationType: Camera.DestinationType.DATA_URL
     });
 }
 
@@ -4839,7 +4885,6 @@ function cameraFileTransparencia(source) {
 // Retrieve image file location from specified source
     navigator.camera.getPicture(onSuccessTransparencia, onFailTransparencia, {
     quality: 50,
-    allowEdit: true,
     targetWidth: 1000,
     destinationType: Camera.DestinationType.DATA_URL,
     sourceType: Camera.PictureSourceType.PHOTOLIBRARY
@@ -5602,11 +5647,9 @@ function cameraServico() {
 // Take picture using device camera and retrieve image as base64-encoded string
     navigator.camera.getPicture(onSuccessServico, onFailServico, {
     quality: 80,
-    allowEdit : true,
     targetWidth: 1500,
     correctOrientation: true,
     destinationType: Camera.DestinationType.DATA_URL,
-    saveToPhotoAlbum: true
     });
 }
 
@@ -5615,7 +5658,6 @@ function cameraFileServico(source) {
 // Retrieve image file location from specified source
     navigator.camera.getPicture(onSuccessServico, onFailServico, {
     quality: 50,
-    allowEdit: true,
     targetWidth: 1000,
     destinationType: Camera.DestinationType.DATA_URL,
     sourceType: Camera.PictureSourceType.PHOTOLIBRARY
@@ -5940,11 +5982,9 @@ function cameraCronograma() {
 // Take picture using device camera and retrieve image as base64-encoded string
     navigator.camera.getPicture(onSuccessCronograma, onFailServico, {
     quality: 80,
-    allowEdit : true,
     targetWidth: 1500,
     correctOrientation: true,
-    destinationType: Camera.DestinationType.DATA_URL,
-    saveToPhotoAlbum: true
+    destinationType: Camera.DestinationType.DATA_URL
     });
 }
 
@@ -5953,7 +5993,6 @@ function cameraFileCronograma(source) {
 // Retrieve image file location from specified source
     navigator.camera.getPicture(onSuccessCronograma, onFailCronograma, {
     quality: 50,
-    allowEdit: true,
     targetWidth: 1000,
     destinationType: Camera.DestinationType.DATA_URL,
     sourceType: Camera.PictureSourceType.PHOTOLIBRARY
@@ -6249,11 +6288,9 @@ function cameraAddMorador() {
 // Take picture using device camera and retrieve image as base64-encoded string
     navigator.camera.getPicture(onSuccessAddMorador, onFailAddMorador, {
     quality: 80,
-    allowEdit : true,
     targetWidth: 1500,
     correctOrientation: true,
-    destinationType: Camera.DestinationType.DATA_URL,
-    saveToPhotoAlbum: true
+    destinationType: Camera.DestinationType.DATA_URL
     });
 }
 
@@ -6262,7 +6299,6 @@ function cameraFileAddMorador(source) {
 // Retrieve image file location from specified source
     navigator.camera.getPicture(onSuccessAddMorador, onFailAddMorador, {
     quality: 50,
-    allowEdit: true,
     targetWidth: 1000,
     destinationType: Camera.DestinationType.DATA_URL,
     sourceType: Camera.PictureSourceType.PHOTOLIBRARY
@@ -6387,9 +6423,9 @@ $$('#cadastro-teste').on('click', function(){
         
         if ($$('#txtcodcondominio').val()=="") {
 
-            $$idcondominio = "37";
-            $$idbloco = "1924";
-            $$iddomicilio = "7595";
+            $$idcondominio = $$idcondominioteste;
+            $$idbloco = $$idblocoteste;
+            $$iddomicilio = $$iddomicilioteste;
             $$txtNomeAddMorador = $$('#txtnomeaddmoradorteste').val();
             $$txtEmailAddMorador = $$('#txtemailaddmoradorteste').val();
             $$cellPhoneaddMorador = $$('#cellphoneaddmoradorteste').val();
@@ -7015,12 +7051,10 @@ function cameraVisitante() {
 // Take picture using device camera and retrieve image as base64-encoded string
     navigator.camera.getPicture(onSuccessVisitante, onFailVisitante, {
     quality: 80,
-    allowEdit : true,
     targetWidth: 1500,
     correctOrientation: true,
     targetHeight: 1000,
-    destinationType: Camera.DestinationType.DATA_URL,
-    saveToPhotoAlbum: true
+    destinationType: Camera.DestinationType.DATA_URL
     });
 }
 
@@ -7029,7 +7063,6 @@ function cameraFileVisitante(source) {
 // Retrieve image file location from specified source
     navigator.camera.getPicture(onSuccessVisitante, onFailVisitante, {
     quality: 50,
-    allowEdit: true,
     targetWidth: 1000,
     targetHeight: 1000,
     destinationType: Camera.DestinationType.DATA_URL,
@@ -7604,12 +7637,10 @@ function cameraVeiculo() {
 // Take picture using device camera and retrieve image as base64-encoded string
     navigator.camera.getPicture(onSuccessVeiculo, onFailVeiculo, {
     quality: 80,
-    allowEdit : true,
     targetWidth: 1500,
     correctOrientation: true,
     targetHeight: 1000,
-    destinationType: Camera.DestinationType.DATA_URL,
-    saveToPhotoAlbum: true
+    destinationType: Camera.DestinationType.DATA_URL
     });
 }
 
@@ -7618,7 +7649,6 @@ function cameraFileVeiculo(source) {
 // Retrieve image file location from specified source
     navigator.camera.getPicture(onSuccessVeiculo, onFailVeiculo, {
     quality: 50,
-    allowEdit: true,
     targetWidth: 1000,
     targetHeight: 1000,
     destinationType: Camera.DestinationType.DATA_URL,
@@ -7704,14 +7734,15 @@ function listMarcas(){
 
     $.ajax({
         //url: "https://fipeapi.appspot.com/api/1/"+tipo+"/marcas.json",
-        //url: " https://parallelum.com.br/fipe/api/v1/carros/marcas",
-        url: "https://veiculos.fipe.org.br/api/veiculos/ConsultarMarcas",
+        url: "https://parallelum.com.br/fipe/api/v1/carros/marcas",
+        //url: "https://veiculos.fipe.org.br/api/veiculos/ConsultarMarcas",
         dataType : "json",
-        type: "post",
-        data: "codigoTabelaReferencia=250&codigoTipoVeiculo="+tipo,
+        type: "get",
+        /*type: "post",
+        data: "codigoTabelaReferencia=250&codigoTipoVeiculo="+tipo,*/
         success: function(data) {
             console.log("entrei-success");
-            console.log(data);
+            //console.log(data);
             $('#txtmarcaveiculo').html("");
             if (data!=null) {
                 myApp.hideIndicator();
@@ -7721,7 +7752,7 @@ function listMarcas(){
                 marcaslist += '<option value="" data-marca-id="">Selecione uma marca</option>';
                 for (var i = 0; i < qtd; i++) {
                     //marcaslist += '<option value="'+data[i].fipe_name+'" data-marca-id="'+data[i].id+'">'+data[i].fipe_name+'</option>';
-                    marcaslist += '<option value="'+data[i].Label+'" data-marca-id="'+data[i].Value+'">'+data[i].Label+'</option>';
+                    marcaslist += '<option value="'+data[i].nome+'" data-marca-id="'+data[i].codigo+'">'+data[i].nome+'</option>';
                 }
 
             }
@@ -7729,9 +7760,42 @@ function listMarcas(){
             $('#txtmarcaveiculo').html(marcaslist);
             myApp.hideIndicator();
         },error: function(data) {
-            myApp.hideIndicator();
-            myApp.alert('Erro ao carregar dados, tente novamente!');
-            $('#txtmarcaveiculo').html("");
+
+
+            $.ajax({
+                url: "https://fipeapi.appspot.com/api/1/"+tipo+"/marcas.json",
+                //url: "https://parallelum.com.br/fipe/api/v1/carros/marcas",
+                //url: "https://veiculos.fipe.org.br/api/veiculos/ConsultarMarcas",
+                dataType : "json",
+                type: "get",
+                /*type: "post",
+                data: "codigoTabelaReferencia=250&codigoTipoVeiculo="+tipo,*/
+                success: function(data) {
+                    console.log("entrei-success");
+                    console.log(data);
+                    $('#txtmarcaveiculo').html("");
+                    if (data!=null) {
+                        myApp.hideIndicator();
+                        var qtd = data.length;
+                        var marcaslist = "";
+
+                        marcaslist += '<option value="" data-marca-id="">Selecione uma marca</option>';
+                        for (var i = 0; i < qtd; i++) {
+                            marcaslist += '<option value="'+data[i].fipe_name+'" data-marca-id="'+data[i].id+'">'+data[i].fipe_name+'</option>';
+                            //marcaslist += '<option value="'+data[i].Label+'" data-marca-id="'+data[i].Value+'">'+data[i].Label+'</option>';
+                        }
+
+                    }
+                    $('.marcalistli').addClass("visivel");
+                    $('#txtmarcaveiculo').html(marcaslist);
+                    myApp.hideIndicator();
+                },error: function(data) {
+                    myApp.hideIndicator();
+                    myApp.alert('Erro ao carregar dados, tente novamente!');
+                    $('#txtmarcaveiculo').html("");
+
+                }
+            });
 
         }
     });
@@ -7751,22 +7815,23 @@ function listModelos(){
         myApp.showIndicator();
         $.ajax({
             //url: "https://fipeapi.appspot.com/api/1/"+tipo+"/veiculos/"+idmarca+".json",
-            //url: "https://parallelum.com.br/fipe/api/v1/"+tipo+"/marcas/"+idmarca+"/modelos",
-            url: "https://veiculos.fipe.org.br/api/veiculos/ConsultarModelos",
+            url: "https://parallelum.com.br/fipe/api/v1/"+tipo+"/marcas/"+idmarca+"/modelos",
+            //url: "https://veiculos.fipe.org.br/api/veiculos/ConsultarModelos",
             dataType : "json",
-            type: "post",
-            data: "codigoTabelaReferencia=250&codigoTipoVeiculo="+tipo+"&codigoMarca="+idmarca,
+            type: "get",
+            /*type: "post",
+            data: "codigoTabelaReferencia=250&codigoTipoVeiculo="+tipo+"&codigoMarca="+idmarca,*/
             success: function(data) {
                 console.log("entrei-success");
                 $('#txtmodeloveiculo').html("");
                 if (data!=null) {
                     myApp.hideIndicator();
-                    var qtd = data.Modelos.length;
+                    var qtd = data.modelos.length;
                     var modeloslist = "";
 
                     for (var i = 0; i < qtd; i++) {
                         //modeloslist += '<option value="'+data[i].fipe_name+'">'+data[i].fipe_name+'</option>';
-                        modeloslist += '<option value="'+data.Modelos[i].Label+'">'+data.Modelos[i].Label+'</option>';
+                        modeloslist += '<option value="'+data.modelos[i].nome+'">'+data.modelos[i].nome+'</option>';
                     }
 
                 }
@@ -7774,9 +7839,39 @@ function listModelos(){
                 $('#txtmodeloveiculo').html(modeloslist);
                 myApp.hideIndicator();
             },error: function(data) {
-                myApp.hideIndicator();
-                myApp.alert('Erro ao carregar dados, tente novamente!');
-                $('#txtmodeloveiculo').html("");
+
+                $.ajax({
+                    url: "https://fipeapi.appspot.com/api/1/"+tipo+"/veiculos/"+idmarca+".json",
+                    //url: "https://parallelum.com.br/fipe/api/v1/"+tipo+"/marcas/"+idmarca+"/modelos",
+                    //url: "https://veiculos.fipe.org.br/api/veiculos/ConsultarModelos",
+                    dataType : "json",
+                    type: "get",
+                    /*type: "post",
+                    data: "codigoTabelaReferencia=250&codigoTipoVeiculo="+tipo+"&codigoMarca="+idmarca,*/
+                    success: function(data) {
+                        console.log("entrei-success");
+                        $('#txtmodeloveiculo').html("");
+                        if (data!=null) {
+                            myApp.hideIndicator();
+                            var qtd = data.length;
+                            var modeloslist = "";
+
+                            for (var i = 0; i < qtd; i++) {
+                                modeloslist += '<option value="'+data[i].fipe_name+'">'+data[i].fipe_name+'</option>';
+                                //modeloslist += '<option value="'+data.Modelos[i].nome+'">'+data.Modelos[i].nome+'</option>';
+                            }
+
+                        }
+                        $('.modelolistli').addClass("visivel");
+                        $('#txtmodeloveiculo').html(modeloslist);
+                        myApp.hideIndicator();
+                    },error: function(data) {
+                        myApp.hideIndicator();
+                        myApp.alert('Erro ao carregar dados, tente novamente!');
+                        $('#txtmodeloveiculo').html("");
+
+                    }
+                });
 
             }
         });
@@ -7929,7 +8024,14 @@ $('#inserircomuncondominio').on('click', function(){
                             $("#blocolistportaria.sembloco").removeClass("invisivel");
                             $("#blocolistportaria.sembloco").val(idBloco);
                             console.log("idBloco = "+$("#blocolistportaria.sembloco").val());
-                        }                        
+                        }
+                        if (localStorage.getItem("moradorIdmorador")) {
+                            console.log("moradorIdmorador");
+                            $('#blocolistmorador').addClass("invisivel");
+                            $("#blocolistmorador.sembloco").removeClass("invisivel");
+                            $("#blocolistmorador.sembloco").val(idBloco);
+                            console.log("idBloco = "+$("#blocolistmorador.sembloco").val());
+                        }
                     }
                 }
                 if (blocolistcomunicado!="") {
@@ -8691,11 +8793,9 @@ function cameraComuncondominio() {
 // Take picture using device camera and retrieve image as base64-encoded string
     navigator.camera.getPicture(onSuccessComuncondominio, onFailComuncondominio, {
     quality: 80,
-    allowEdit : true,
     targetWidth: 1500,
     correctOrientation: true,
-    destinationType: Camera.DestinationType.DATA_URL,
-    saveToPhotoAlbum: true
+    destinationType: Camera.DestinationType.DATA_URL
     });
 }
 
@@ -8704,7 +8804,6 @@ function cameraFileComuncondominio(source) {
 // Retrieve image file location from specified source
     navigator.camera.getPicture(onSuccessComuncondominio, onFailComuncondominio, {
     quality: 50,
-    allowEdit: true,
     targetWidth: 1000,
     destinationType: Camera.DestinationType.DATA_URL,
     sourceType: Camera.PictureSourceType.PHOTOLIBRARY
@@ -8807,6 +8906,7 @@ $$('#pdfFileComuncondominio').on('change', function (e) {
         }
     }else{
         myApp.alert('Formato inválido! Escolha um arquivo no formato PDF.');
+        myApp.hideIndicator();
     }
 
 });
@@ -9711,11 +9811,9 @@ function cameraResp() {
 // Take picture using device camera and retrieve image as base64-encoded string
     navigator.camera.getPicture(onSuccessResp, onFailResp, {
     quality: 80,
-    allowEdit : true,
     targetWidth: 1500,
     correctOrientation: true,
-    destinationType: Camera.DestinationType.DATA_URL,
-    saveToPhotoAlbum: true
+    destinationType: Camera.DestinationType.DATA_URL
     });
 }
 
@@ -9724,7 +9822,6 @@ function cameraFileResp(source) {
 // Retrieve image file location from specified source
     navigator.camera.getPicture(onSuccessResp, onFailResp, {
     quality: 50,
-    allowEdit: true,
     targetWidth: 1000,
     destinationType: Camera.DestinationType.DATA_URL,
     sourceType: Camera.PictureSourceType.PHOTOLIBRARY
@@ -9876,11 +9973,9 @@ function cameraComunportaria() {
 // Take picture using device camera and retrieve image as base64-encoded string
     navigator.camera.getPicture(onSuccessComunportaria, onFailComunportaria, {
     quality: 80,
-    allowEdit : true,
     targetWidth: 1500,
     correctOrientation: true,
-    destinationType: Camera.DestinationType.DATA_URL,
-    saveToPhotoAlbum: true
+    destinationType: Camera.DestinationType.DATA_URL
     });
 }
 
@@ -9889,7 +9984,6 @@ function cameraFileComunportaria(source) {
 // Retrieve image file location from specified source
     navigator.camera.getPicture(onSuccessComunportaria, onFailComunportaria, {
     quality: 50,
-    allowEdit: true,
     targetWidth: 1000,
     destinationType: Camera.DestinationType.DATA_URL,
     sourceType: Camera.PictureSourceType.PHOTOLIBRARY
@@ -10584,11 +10678,9 @@ function cameraComunmorador() {
 // Take picture using device camera and retrieve image as base64-encoded string
     navigator.camera.getPicture(onSuccessComunmorador, onFailComunmorador, {
     quality: 80,
-    allowEdit : true,
     targetWidth: 1500,
     correctOrientation: true,
-    destinationType: Camera.DestinationType.DATA_URL,
-    saveToPhotoAlbum: true
+    destinationType: Camera.DestinationType.DATA_URL
     });
 }
 
@@ -10597,7 +10689,6 @@ function cameraFileComunmorador(source) {
 // Retrieve image file location from specified source
     navigator.camera.getPicture(onSuccessComunmorador, onFailComunmorador, {
     quality: 50,
-    allowEdit: true,
     targetWidth: 1000,
     destinationType: Camera.DestinationType.DATA_URL,
     sourceType: Camera.PictureSourceType.PHOTOLIBRARY
@@ -12356,11 +12447,11 @@ function bannercont(id){
             $('.del-banner').addClass('invisivel');
         }
         if (localStorage.getItem("administradoraIdadministradora") || localStorage.getItem("sindicoIdsindico")) {
-            //$('.del-banner').removeClass('invisivel');
+            $('.del-banner').removeClass('invisivel');
         }
 
         $.ajax({
-            url: $server+"functionAppBanner.php?idbanner="+id+"&action=list",
+             url: $server+"functionAppBanner.php?idbanner="+id+"&idmorador="+localStorage.getItem("moradorIdmorador")+"&idsindico="+localStorage.getItem("sindicoIdsindico")+"&idportaria="+localStorage.getItem("portariaIdportaria")+"&idadministradora="+localStorage.getItem("administradoraIdadministradora")+"&action=list",
             dataType : "json",
             success: function(data) {
             myApp.hideIndicator();
@@ -12375,7 +12466,7 @@ function bannercont(id){
                         imgBanner = '<img src="'+data.banner[i].urlBanner+'">';
                     }
                     if (data.banner[i].url!="") {
-                        linkurl = "onclick=openURLBrowser('"+data.banner[i].url+"');";
+                        linkurl = "onclick=clickbanner('"+data.banner[i].idBanner+"');openURLBrowser('"+data.banner[i].url+"');";
                     }
                     databanner = '<a href="#" '+linkurl+'>'+imgBanner+'</a>';
                     imgBanner = "";
@@ -12419,8 +12510,7 @@ function cameraBanner() {
     targetWidth: 1500,
     targetHeight: 2500,
     correctOrientation: true,
-    destinationType: Camera.DestinationType.DATA_URL,
-    saveToPhotoAlbum: true
+    destinationType: Camera.DestinationType.DATA_URL
     });
 }
 
@@ -12582,7 +12672,7 @@ function enviarbanner()
                     '</div>' +
                 '</div>',
             onOpen: function (p) {
-                $$('.calendar-custom-toolbar .center').text(monthNames[p.currentMonth] +' - ' + p.currentYear);
+                $$('.calendar-custom-toolbar .center').text(monthNames[p.currentMonth] +', ' + p.currentYear);
                 $$('.calendar-custom-toolbar .left .link').on('click', function () {
                     calendarInline.prevMonth();
                 });
@@ -13483,7 +13573,10 @@ function limpar()
 
 /////////////////////////// push ///////////////////////////
 
-        document.addEventListener('app.Ready', onDeviceReady, true);
+        // habilita teste local
+        if ($$testelocal==false) {
+            document.addEventListener('app.Ready', onDeviceReady, true);
+        }
         function onDeviceReady() {
 
             //window.ga.startTrackerWithId("UA-108232712-1", 10);
@@ -13518,11 +13611,11 @@ function limpar()
 
             var push = PushNotification.init({
                 android: {
-                    senderID: "230054065669",
+                    senderID: $$senderID,
                     icon: "iconnotification"
                 },
                 ios: {
-                    senderID: "230054065669",
+                    senderID: $$senderID,
                     gcmSandbox: "false", // false para producao true para desenvolvimento
                     alert: "true",
                     sound: "true",
@@ -13645,6 +13738,10 @@ function limpar()
                                 mainView.router.load({pageName: 'enquetescont'});
                                 enquetescont(data.additionalData.id,true);
                                 break;
+
+                                case 'banner':
+                                bannercont(data.additionalData.id,true);
+                                break;
                             }
                         }
                     });
@@ -13696,6 +13793,10 @@ function limpar()
                                 mainView.router.load({pageName: 'enquetescont'});
                                 enquetescont(data.additionalData.id,true);
                                 break;
+
+                                case 'banner':
+                                bannercont(data.additionalData.id,true);
+                                break;
                             }
 
                         console.log('CAPTURADO PUSH COM APP EM COLDSTART!');
@@ -13744,6 +13845,10 @@ function limpar()
                                 case 'enquete':
                                 mainView.router.load({pageName: 'enquetescont'});
                                 enquetescont(data.additionalData.id,true);
+                                break;
+
+                                case 'banner':
+                                bannercont(data.additionalData.id,true);
                                 break;
                             }
                         console.log('CAPTURADO PUSH COM APP EM BACKGROUND!');  
